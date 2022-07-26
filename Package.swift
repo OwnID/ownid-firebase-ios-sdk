@@ -17,7 +17,7 @@ let package = Package(
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git",
                  from: "8.0.0"),
         .package(url: "https://github.com/OwnID/ownid-core-ios-sdk.git",
-                 branch: "main"),
+                 from: "0.0.0"),
     ],
     targets: [
         .target(name: "OwnIDFirebaseSDK",
