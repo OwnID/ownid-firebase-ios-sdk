@@ -67,13 +67,17 @@ public extension OwnID {
         /// - Parameter viewModel: ``OwnID.FlowsSDK.RegisterView.ViewModel``
         /// - Parameter webLanguages: Languages for web view. List of well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language) .
         /// - Parameter email: to be used toregister. Displayed when logging in
+        /// - Parameter visualConfig: contains information about how views will look like
+        /// - Parameter shouldImmidiatelyShowTooltip: provides direct control over if tooltip popover should be displayed
         /// - Returns: View to display
         public static func createRegisterView(viewModel: OwnID.FlowsSDK.RegisterView.ViewModel,
                                               email: Binding<String>,
-                                              visualConfig: OwnID.UISDK.VisualLookConfig = .init()) -> OwnID.FlowsSDK.RegisterView {
+                                              visualConfig: OwnID.UISDK.VisualLookConfig = .init(),
+                                              shouldImmidiatelyShowTooltip: Binding<Bool>? = .none) -> OwnID.FlowsSDK.RegisterView {
             OwnID.FlowsSDK.RegisterView(viewModel: viewModel,
                                         usersEmail: email,
-                                        visualConfig: visualConfig)
+                                        visualConfig: visualConfig,
+                                        shouldImmidiatelyShowTooltip: shouldImmidiatelyShowTooltip)
         }
         
         /// Creates view model for login flow in Firebase and manages ``OwnID.FlowsSDK.LoginView``
@@ -92,13 +96,17 @@ public extension OwnID {
         /// View that encapsulates management of ``OwnID.CoreSDK.SkipPasswordView`` state
         /// - Parameter viewModel: ``OwnID.FlowsSDK.LoginView.ViewModel``
         /// - Parameter usersEmail: Email to be used in link and login flow. Displayed when logging in
+        /// - Parameter visualConfig: contains information about how views will look like
+        /// - Parameter shouldImmidiatelyShowTooltip: provides direct control over if tooltip popover should be displayed
         /// - Returns: View to display
         public static func createLoginView(viewModel: OwnID.FlowsSDK.LoginView.ViewModel,
                                            usersEmail: Binding<String>,
-                                           visualConfig: OwnID.UISDK.VisualLookConfig = .init()) -> OwnID.FlowsSDK.LoginView {
+                                           visualConfig: OwnID.UISDK.VisualLookConfig = .init(),
+                                           shouldImmidiatelyShowTooltip: Binding<Bool>? = .none) -> OwnID.FlowsSDK.LoginView {
             OwnID.FlowsSDK.LoginView(viewModel: viewModel,
                                      usersEmail: usersEmail,
-                                     visualConfig: visualConfig)
+                                     visualConfig: visualConfig,
+                                     shouldImmidiatelyShowTooltip: shouldImmidiatelyShowTooltip)
         }
     }
 }
