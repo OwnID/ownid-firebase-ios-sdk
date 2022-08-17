@@ -1,3 +1,5 @@
+![OwnIDSDK](./logo.svg)
+
 # OwnID Firebase-iOS SDK
 The OwnID Firebase-iOS SDK is a client library written in Swift that provides a passwordless login alternative for your iOS application by using cryptographic keys to replace the traditional password. Integrating the SDK with your iOS app adds a Skip Password option to its registration and login screens. For more general information about OwnID SDKs, see [OwnID iOS SDK](../README.md).
 
@@ -6,7 +8,7 @@ The OwnID Firebase-iOS SDK is a client library written in Swift that provides a 
 * [Add Package Dependency](#add-package-dependency)
 * [Add Property List File to Project](#add-property-list-file-to-project)
 * [Create URL Type (Custom URL Scheme)](#create-url-type-custom-url-scheme)
-* [Import OwnID Modules](#import-ownid-modules)
+* [Import OwnID Modules](#import-ownid-module)
 * [Initialize the SDK](#initialize-the-sdk)
 * [Implement the Registration Screen](#implement-the-registration-screen)
   + [Customize View Model](#customize-view-model)
@@ -27,10 +29,10 @@ Before incorporating OwnID into your iOS app, you must create an OwnID applicati
 In addition, ensure you have done everything to [add Firebase authentication to your iOS project](https://firebase.google.com/docs/ios/setup).
 
 ## Add Package Dependency
-The OwnID iOS SDK is distributed as an SPM package. Use the Swift Package Manager to add the following package dependency to your project:
+The SDK is distributed as an SPM package. Use the Swift Package Manager to add the following package dependency to your project:
 
 ```
-https://github.com/OwnID/ownid-ios-sdk
+https://github.com/OwnID/ownid-firebase-ios-sdk
 ```
 When prompted, select the **OwnIDFirebaseSDK** product.
 
@@ -152,11 +154,9 @@ final class MyRegisterViewModel: ObservableObject {
 **Important:** The OwnID `ownIDViewModel.register` function must be called in response to the `.readyToRegister` event. This `ownIDViewModel.register` function eventually calls the standard Firebase function `createUser(withEmail: password:)` to register the user in Firebase, so you do not need to call this Firebase function yourself.
 
 ### Add the OwnID View
-Inserting the OwnID view into your View layer results in the OwnID button appearing in your app. When the user selects OwnID button, the SDK opens a sheet to interact with the user. The code that creates this view accepts the OwnID view model as its argument. It is suggested that you pass user's email binding for properly creating accounts.
+Inserting the OwnID view into your View layer results in the OwnID button appearing in your app. When the user selects OwnID button, the SDK presents in app Safari browser to interact with the user. The code that creates this view accepts the OwnID view model as its argument. It is suggested that you pass user's email binding for properly creating accounts.
 
 It is reccomended to set height of button the same as text field and disable text field when OwnID is enabled. 
-
-![how it looks like](../drawings/skip_button_design.png) ![how it looks like](../drawings/skip_button_design_dark.png)
 
 [Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/Register/RegisterView.swift)
 ```swift
@@ -165,8 +165,6 @@ var body: some View {
     OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, email: usersEmail)
 }
 ```
-
-It is recommended that you hide `OwnID.FlowsSDK.RegisterView` when the user starts typing in the password text field. [Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/Register/RegisterView.swift)
 
 ## Implement the Login Screen
 The process of implementing your Login screen is very similar to the one used to implement the Registration screen. When the user selects Skip Password on the Login screen and if the user has previously set up OwnID authentication, allows them to log in with OwnID.
@@ -187,6 +185,7 @@ final class MyLogInViewModel: ObservableObject {
 After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the Skip Password option. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events.
 
 [Complete example](../Demo/FirebaseDemo/App/FirebaseLogin.swift)
+
 [Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/LogIn/LogInViewModel.swift)
 ```swift
 final class MyLogInViewModel: ObservableObject {
@@ -225,6 +224,7 @@ final class MyLogInViewModel: ObservableObject {
 Inserting the OwnID view into your View layer results in the Skip Password option appearing in your app. When the user selects Skip Password, the SDK opens a sheet to interact with the user. It is recommended that you place the OwnID view, `OwnID.LoginView`, immediately after the password text field. The code that creates this view accepts the OwnID view model as its argument. It is suggested that you pass user's email binding for properly creating accounts.
 
 [Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/LogIn/LogInView.swift)
+
 [Complete example](../Demo/FirebaseDemo/App/FirebaseLogin.swift)
 ```swift
 //Put LoginView inside your main view, preferably below password field
@@ -238,11 +238,6 @@ var body: some View {
   //...
 }
 ```
-
-![how it looks like](../drawings/skip_button_design.png) ![how it looks like](../drawings/skip_button_design_dark.png)
-
-It is recommended that you hide `OwnID.FlowsSDK.LoginView` when the user starts typing in the password text field. 
-[Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/LogIn/LogInView.swift)
 
 
 ## Errors
@@ -303,18 +298,6 @@ By default, the OwnID Web App is launched with a language TAGs list (well-formed
 OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, webLanguages: OwnID.CoreSDK.Languages.init(rawValue: ["he"]))
 ```
 
-### Directing Users to the OwnID iOS App
-By default, the SDK directs the user to the OwnID Web App to register or login with OwnID. However, with a small configuration, users who have the native OwnID app installed on their mobile device can complete the registration/login process in the native app rather than the web app.
-
-To direct the user to the OwnID native app, edit the `LSApplicationQueriesSchemes` key in your `Info.plist` file. Simply add `ownidopener` as a string in the `LSApplicationQueriesSchemes` array.
-Example:
-[Complete example](../Demo/FirebaseDemo/Misc/Info.plist)
-```xml
-<key>LSApplicationQueriesSchemes</key>
-<array>
-  <string>ownidopener</string>
-</array>
-```
 
 ## Logging
 You can enable console logging by calling `OwnID.startDebugConsoleLogger()`.
