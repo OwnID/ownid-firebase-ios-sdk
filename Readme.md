@@ -274,8 +274,7 @@ It is possible to set button visual settings by passing `OwnID.UISDK.VisualLookC
 
 ```swift
 let tooltipConfig = OwnID.UISDK.TooltipVisualLookConfig(backgroundColor: .pink,
-                                                        borderColor: .accentColor,
-                                                        shouldShowTooltip: false)
+                                                        borderColor: .accentColor)
 let config = OwnID.UISDK.VisualLookConfig(biometryIconColor: .red,
                                           shadowColor: .cyan,
                                           tooltipVisualLookConfig: tooltipConfig)
