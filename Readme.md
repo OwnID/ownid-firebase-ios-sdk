@@ -40,7 +40,7 @@ When prompted, select the **OwnIDFirebaseSDK** product.
 
 When the application starts, the OwnID SDK automatically reads `OwnIDConfiguration.plist` from the file system to configure the default instance that is created. At a minimum, this PLIST file defines a redirection URI and unique app id. Create `OwnIDConfiguration.plist` and define the following mandatory parameters:
 
-[Complete example](../Demo/FirebaseDemo/Misc/OwnIDConfiguration.plist)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/Misc/OwnIDConfiguration.plist)
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -64,7 +64,7 @@ You need to open your project and create a new URL type that corresponds to the 
 ## Import OwnID Module
 Once you have added the OwnID package dependency, you need to import the OwnID module so you can access the SDK features. As you implement OwnID in your project, add the following to your source files:
 
-[Complete example](../Demo/FirebaseDemo/App/FirebaseLoggedIn.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/FirebaseLoggedIn.swift)
 ```swift
 import OwnIDFirebaseSDK
 ```
@@ -72,7 +72,7 @@ import OwnIDFirebaseSDK
 ## Initialize the SDK
 The OwnID SDK must be initialized properly using the `configure()` function, preferably in the main entry point of your app (in the `@main` `App` struct). For example, enter:
 
-[Complete example](../Demo/FirebaseDemo/App/DemoApp.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/DemoApp.swift)
 ```swift
 @main
 struct ExampleApp: App {
@@ -92,7 +92,7 @@ Within a Model-View-ViewModel (MVVM) architecture pattern, adding the Skip Passw
 ### Customize View Model
 The OwnID view that inserts the Skip Password UI is bound to an instance of the OwnID view model. Before modifying your View layer, create an instance of this view model, `OwnID.FlowsSDK.RegisterView.ViewModel`, within your ViewModel layer:
 
-[Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/Register/RegisterViewModel.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/Register/RegisterViewModel.swift)
 ```swift
 final class MyRegisterViewModel: ObservableObject {
     // MARK: OwnID
@@ -102,7 +102,7 @@ final class MyRegisterViewModel: ObservableObject {
 
 After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the OwnID Web App. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events (it can be placed just after the code that creates the OwnID view model instance).
 
-[Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/Register/RegisterViewModel.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/Register/RegisterViewModel.swift)
 ```swift
 final class MyRegisterViewModel: ObservableObject {
     // MARK: OwnID
@@ -158,7 +158,7 @@ Inserting the OwnID view into your View layer results in the OwnID button appear
 
 It is reccomended to set height of button the same as text field and disable text field when OwnID is enabled. 
 
-[Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/Register/RegisterView.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/Register/RegisterView.swift)
 ```swift
 //Put RegisterView inside your main view, preferably besides password field
 var body: some View {
@@ -174,7 +174,7 @@ Like the Registration screen, you add Skip Password to your application's Login 
 ### Customize View Model
 You need to create an instance of the view model, `OwnID.LoginView.ViewModel`, that the OwnID login view uses. Within your ViewModel layer, enter:
 
-[Complete example](../Demo/FirebaseDemo/App/FirebaseLogin.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/FirebaseLogin.swift)
 ```swift
 final class MyLogInViewModel: ObservableObject {
     // MARK: OwnID
@@ -184,9 +184,8 @@ final class MyLogInViewModel: ObservableObject {
 
 After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the Skip Password option. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events.
 
-[Complete example](../Demo/FirebaseDemo/App/FirebaseLogin.swift)
-
-[Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/LogIn/LogInViewModel.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/FirebaseLogin.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/LogIn/LogInViewModel.swift)
 ```swift
 final class MyLogInViewModel: ObservableObject {
     // MARK: OwnID
@@ -223,9 +222,8 @@ final class MyLogInViewModel: ObservableObject {
 ### Add OwnID View
 Inserting the OwnID view into your View layer results in the Skip Password option appearing in your app. When the user selects Skip Password, the SDK opens a sheet to interact with the user. It is recommended that you place the OwnID view, `OwnID.LoginView`, immediately after the password text field. The code that creates this view accepts the OwnID view model as its argument. It is suggested that you pass user's email binding for properly creating accounts.
 
-[Complete example](../Demo/ios-sdk-demo-components/DemoApp/LoggedOut/LogIn/LogInView.swift)
-
-[Complete example](../Demo/FirebaseDemo/App/FirebaseLogin.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/FirebaseLogin.swift)
 ```swift
 //Put LoginView inside your main view, preferably below password field
 var body: some View {
@@ -244,7 +242,7 @@ var body: some View {
 All errors from the SDK have an `OwnID.CoreSDK.Error` type. You can use them, for example, to properly ask the user to perform an action.
 
 Here are some of the possible errors:
-[Complete example](../OwnIDCoreSDK/SDK/Types/Error.swift)
+[Complete example](https://github.com/OwnID/ownid-core-ios-sdk/blob/master/Core/Sources/Types/Error.swift)
 ```swift
 switch error {
 case .unsecuredHttpPassed:
@@ -272,13 +270,15 @@ case .plugin(let pluginError):
 ## Advanced Configuration
 
 ### Button Apperance
-It is possible to set button visual settings by passing `OwnID.UISDK.VisualLookConfig`.
+It is possible to set button visual settings by passing `OwnID.UISDK.VisualLookConfig`. Additionally, you can override default behaviour of tooltip appearing or other settings in `OwnID.UISDK.TooltipVisualLookConfig`.
 
 ```swift
-let config = OwnID.UISDK.VisualLookConfig(buttonForegroundColor: .red,
-                                          backgroundColor: .brown,
-                                          borderColor: .brown,
-                                          shadowColor: .cyan)
+let tooltipConfig = OwnID.UISDK.TooltipVisualLookConfig(backgroundColor: .pink,
+                                                        borderColor: .accentColor,
+                                                        shouldShowTooltip: false)
+let config = OwnID.UISDK.VisualLookConfig(biometryIconColor: .red,
+                                          shadowColor: .cyan,
+                                          tooltipVisualLookConfig: tooltipConfig)
 OwnID.FirebaseSDK.createLoginView(viewModel: ownIDViewModel,
                                   usersEmail: usersEmail,
                                   visualConfig: config)
