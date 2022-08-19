@@ -154,6 +154,7 @@ final class MyRegisterViewModel: ObservableObject {
 We recommend showing tooltip for user when valid email is entered. Tooltip is kind of popup that gives hint for user to use OwnID button. You can use your own email validation, along with custom logic how to show this suggestion popup.
 
 For example, when user entered valid email, we use binding in OwnID view model to display tooltip.
+
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/Register/RegisterViewModel.swift)
 ```
 // recommended approach is to subscribe to publised property of email and use 
@@ -196,6 +197,7 @@ final class MyLogInViewModel: ObservableObject {
 After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the Skip Password option. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events.
 
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/FirebaseLogin.swift)
+
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/LogIn/LogInViewModel.swift)
 ```swift
 final class MyLogInViewModel: ObservableObject {
@@ -234,6 +236,7 @@ final class MyLogInViewModel: ObservableObject {
 Inserting the OwnID view into your View layer results in the Skip Password option appearing in your app. When the user selects Skip Password, the SDK opens a sheet to interact with the user. It is recommended that you place the OwnID view, `OwnID.LoginView`, immediately after the password text field. The code that creates this view accepts the OwnID view model as its argument. It is suggested that you pass user's email binding for properly creating accounts.
 
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/tree/master/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
+
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/FirebaseLogin.swift)
 ```swift
 //Put LoginView inside your main view, preferably below password field
@@ -256,6 +259,7 @@ Use `shouldShowTooltip` to disable tooltip appear of tooltip completely. To do t
 All errors from the SDK have an `OwnID.CoreSDK.Error` type. You can use them, for example, to properly ask the user to perform an action.
 
 Here are some of the possible errors:
+
 [Complete example](https://github.com/OwnID/ownid-core-ios-sdk/blob/master/Core/Sources/Types/Error.swift)
 ```swift
 switch error {
