@@ -319,6 +319,7 @@ OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, webLan
 As alternative to OwnID button it is possible to use custom view to call functionality. In a nutshell, here it is the same behaviour from `ownIDViewModel`, just with your custom view provided.
 After you created custom view, on press send void action through publisher.
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
+
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInViewModel.swift)
 
 Good practice is to pass closure to `ownIDViewModel` for it to be able to pass email down to web app. Assign email closure:
