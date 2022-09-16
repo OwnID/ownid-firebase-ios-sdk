@@ -317,7 +317,8 @@ OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, webLan
 
 ## Manually Invoke OwnID Flow
 As alternative to OwnID button it is possible to use custom view to call functionality. In a nutshell, here it is the same behaviour from `ownIDViewModel`, just with your custom view provided.
-After you created custom view, on press send void action through publisher.
+
+Create simple `PassthroughSubject`. After you created custom view, on press send void action through this `PassthroughSubject`. In your `viewModel`, make `ownIDViewModel` to subscribe to this newly created publisher.
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
 
 ```swift
