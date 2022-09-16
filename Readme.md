@@ -20,7 +20,7 @@ The OwnID Firebase-iOS SDK is a client library written in Swift that provides a 
 * [Advanced Configuration](#advanced-configuration)
   + [Alternative Syntax for Configure Function 🎛](#alternative-syntax-for-configure-function-)
   + [OwnID Web App language](#ownid-web-app-language)
-  + [Directing Users to the OwnID iOS App](#directing-users-to-the-ownid-ios-app)
+  + [Manually Invoke OwnID Flow](#manually-invoke-ownid-flow)
 * [Logging](#logging)
 
 ## Before You Begin
@@ -314,6 +314,20 @@ By default, the OwnID Web App is launched with a language TAGs list (well-formed
 ```swift
 OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, webLanguages: OwnID.CoreSDK.Languages.init(rawValue: ["he"]))
 ```
+
+## Manually Invoke OwnID Flow
+As alternative to OwnID button it is possible to use custom view to call functionality. In a nutshell, here it is the same behaviour from `ownIDViewModel`, just with your custom view provided.
+After you created custom view, on press send void action through publisher.
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
+[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInViewModel.swift)
+
+Good practice is to pass closure to `ownIDViewModel` for it to be able to pass email down to web app. Assign email closure:
+
+```swift
+ownIDViewModel.getEmail = { self.email }
+```
+
+Additionally you can reset view by calling `ownIDViewModel.resetState()`.
 
 
 ## Logging
