@@ -320,6 +320,10 @@ As alternative to OwnID button it is possible to use custom view to call functio
 After you created custom view, on press send void action through publisher.
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
 
+```swift
+ownIDViewModel.subscribe(to: self.buttonPressedPublisher.eraseToAnyPublisher())
+```
+
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/LogIn/LogInViewModel.swift)
 
 Good practice is to pass closure to `ownIDViewModel` for it to be able to pass email down to web app. Assign email closure:
