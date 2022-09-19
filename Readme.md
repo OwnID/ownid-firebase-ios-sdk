@@ -1,6 +1,8 @@
 ![OwnIDSDK](./logo.svg)
 
+
 # OwnID Firebase-iOS SDK
+
 The OwnID Firebase-iOS SDK is a client library written in Swift that provides a passwordless login alternative for your iOS application by using cryptographic keys to replace the traditional password. Integrating the SDK with your iOS app adds a Skip Password option to its registration and login screens. For more general information about OwnID SDKs, see [OwnID iOS SDK](../README.md).
 
 ## Table of contents
