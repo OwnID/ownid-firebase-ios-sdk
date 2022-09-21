@@ -31,9 +31,9 @@ public extension OwnID.FirebaseSDK {
                     OwnID.CoreSDK.logger.logFirebase(entry: .errorEntry(message: "error: \(error.localizedDescription), idtoken: \(String(describing: idToken))", Self.self))
                     promise(.failure(.plugin(error: error)))
                 }
-                guard let idToken = idToken else { handle(error: .tokenIsMissing); return }
+                guard let idToken else { handle(error: .tokenIsMissing); return }
                 auth.signIn(withCustomToken: idToken) { auth, error in
-                    if let error = error {
+                    if let error {
                         handle(error: .firebaseSDK(error: error))
                     }
                     guard auth != nil else { handle(error: .firebaseAuthIsMissing); return }
