@@ -58,7 +58,9 @@ public extension OwnID {
                                                  auth: Auth = .auth(),
                                                  firestore: Firestore = .firestore()) -> OwnID.FlowsSDK.RegisterView.ViewModel {
             let performer = RegistrationPerformer(auth: auth, firestore: firestore)
+            let performerLogin = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.RegisterView.ViewModel(registrationPerformer: performer,
+                                                         loginPerformer: performerLogin,
                                                          sdkConfigurationName: sdkName,
                                                          webLanguages: webLanguages)
         }
