@@ -45,7 +45,7 @@ extension OwnID.FirebaseSDK {
             auth.createUser(withEmail: configuration.email.rawValue,
                             password: OwnID.FlowsSDK.Password.generatePassword().passwordString)
             { auth, error in
-                if let error = error {
+                if let error {
                     handle(error: .firebaseSDK(error: error))
                     return
                 }
@@ -60,7 +60,7 @@ extension OwnID.FirebaseSDK {
                 guard var docData = configuration.payload.dataContainer as? [String: Any] else { handle(error: .metadataIsMissing); return }
                 docData[metadata.userIdKey] = user.uid
                 db.collection(metadata.collectionName).document(metadata.docId).setData(docData) { error in
-                    if let error = error {
+                    if let error {
                         handle(error: .firebaseSDK(error: error))
                     } else {
                         promise(.success(VoidOperationResult()))
