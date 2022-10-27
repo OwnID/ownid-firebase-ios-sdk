@@ -1,9 +1,8 @@
-@_exported import OwnIDCoreSDK
-@_exported import OwnIDUISDK
 import FirebaseAuth
 import FirebaseFirestore
 import Combine
 import SwiftUI
+import OwnIDCoreSDK
 
 extension OwnID.FirebaseSDK {
     static let sdkName = "Firebase"

@@ -1,5 +1,4 @@
 import OwnIDCoreSDK
-import OwnIDFlowsSDK
 import FirebaseAuth
 import Combine
 
