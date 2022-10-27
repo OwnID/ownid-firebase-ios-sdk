@@ -20,5 +20,5 @@ Pod::Spec.new do |s|
   s.source_files = 'Core/**/*'
   s.dependency 'ownid-core-ios-sdk'
   s.dependency 'FirebaseAuth'
-  s.dependency 'FirebaseFirestoreSwift'
+  s.dependency 'FirebaseFirestore'
 end
