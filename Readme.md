@@ -209,9 +209,9 @@ final class MyLogInViewModel: ObservableObject {
     // MARK: OwnID
     let ownIDViewModel = OwnID.FirebaseSDK.loginViewModel()
 
- 	  init() {
+    init() {
        subscribe(to: ownIDViewModel.eventPublisher)
-   	}
+     }
 
      func subscribe(to eventsPublisher: OwnID.LoginPublisher) {
        eventsPublisher
