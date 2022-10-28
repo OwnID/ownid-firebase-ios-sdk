@@ -31,12 +31,11 @@ Before incorporating OwnID into your iOS app, you must create an OwnID applicati
 In addition, ensure you have done everything to [add Firebase authentication to your iOS project](https://firebase.google.com/docs/ios/setup).
 
 ## Add Package Dependency
-The SDK is distributed as an SPM package. Use the Swift Package Manager to add the following package dependency to your project:
+The SDK is distributed via Cocoapods. Use the Cocoapods to add the following package dependency to your project:
 
 ```
-https://github.com/OwnID/ownid-firebase-ios-sdk
+pod 'ownid-firebase-ios-sdk'
 ```
-When prompted, select the **OwnIDFirebaseSDK** product.
 
 ## Add Property List File to Project
 
@@ -72,7 +71,7 @@ import OwnIDFirebaseSDK
 ```
 
 ## Initialize the SDK
-The OwnID SDK must be initialized properly using the `configure()` function, preferably in the main entry point of your app (in the `@main` `App` struct). For example, enter:
+The OwnID SDK must be initialized properly using the `configure()` function, preferably in the main entry point of your app (in the `@main` `App` struct). Or in AppDelegate. For example, enter:
 
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/FirebaseDemo/App/DemoApp.swift)
 ```swift
@@ -158,7 +157,7 @@ We recommend showing tooltip for user when valid email is entered. Tooltip is ki
 For example, when user entered valid email, we use binding in OwnID view model to display tooltip.
 
 [Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/DemoAppComponents/LoggedOut/Register/RegisterViewModel.swift)
-```
+```swift
 // recommended approach is to subscribe to publised property of email and use 
 // .removeDuplicates() along with .debounce
 ownIDViewModel.shouldShowTooltip = ownIDViewModel.shouldShowTooltipEmailProcessingClosure(emailValue)
