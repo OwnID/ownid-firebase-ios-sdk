@@ -141,6 +141,10 @@ final class MyRegisterViewModel: ObservableObject {
                      
                    case .loading:
                      // Display loading indicator according to your designs
+		     
+		   case .resetTapped:
+		     // User tapped activeted button. Rest any data if
+		     // needed. 
                    }
 
                case .failure(let error):
