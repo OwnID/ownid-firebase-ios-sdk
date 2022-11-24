@@ -12,9 +12,9 @@ extension OwnID.FirebaseSDK {
             self.sdkConfigurationName = sdkConfigurationName
         }
         
-        func login(payload: OwnID.CoreSDK.Payload, email: String) -> AnyPublisher<OperationResult, OwnID.CoreSDK.Error> {
+        func login(payload: OwnID.CoreSDK.Payload, email: String) -> OwnID.LoginResultPublisher {
             OwnID.FirebaseSDK.SignIn.signIn(payload: payload, auth: auth)
-                .map { $0 as OperationResult }
+                .map { OwnID.LoginResult(operationResult: $0 as OperationResult) }
                 .eraseToAnyPublisher()
         }
     }

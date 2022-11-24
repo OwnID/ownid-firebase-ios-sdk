@@ -14,9 +14,9 @@ extension OwnID.FirebaseSDK {
         let firestore: Firestore
         
         func register(configuration: OwnID.FlowsSDK.RegistrationConfiguration,
-                      parameters: RegisterParameters) -> AnyPublisher<OperationResult, OwnID.CoreSDK.Error> {
+                      parameters: RegisterParameters) -> OwnID.RegistrationResultPublisher {
             OwnID.FirebaseSDK.register(auth: auth, db: firestore, configuration: configuration)
-                .map { $0 as OperationResult }
+                .map { OwnID.RegisterResult(operationResult: $0 as OperationResult) }
                 .eraseToAnyPublisher()
         }
     }
