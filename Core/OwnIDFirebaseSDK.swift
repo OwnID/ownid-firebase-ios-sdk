@@ -6,7 +6,7 @@ import SwiftUI
 
 extension OwnID.FirebaseSDK {
     static let sdkName = "Firebase"
-    static let version = "1.0.1"
+    static let version = "2.1.1"
 }
 
 public extension OwnID {
