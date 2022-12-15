@@ -5,7 +5,7 @@ extension OwnID.FirebaseSDK {
     public class FlowLogEntry: OwnID.CoreSDK.StandardMetricLogEntry {
         internal init(context: String,
                       requestPath: String? = .none,
-                      logLevel: OwnID.CoreSDK.LogLevel = .information,
+                      logLevel: OwnID.CoreSDK.LogLevel = .debug,
                       message: String,
                       codeInitiator: String) {
             super.init(context: context,
