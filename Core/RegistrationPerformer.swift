@@ -34,12 +34,9 @@ extension OwnID.FirebaseSDK {
 
 extension OwnID.FirebaseSDK {
     static func register(auth: Auth, db: Firestore, configuration: OwnID.FlowsSDK.RegistrationConfiguration) -> EventPublisher {
-        Future<VoidOperationResult, OwnID.CoreSDK.Error> { promise in
+        Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
             func handle(error: OwnID.FirebaseSDK.Error) {
-                OwnID.CoreSDK.logger.logFirebase(entry: .errorEntry(context: configuration.payload.context,
-                                                                    message: "error: \(error.localizedDescription)",
-                                                                    Self.self))
-                promise(.failure(.plugin(error: error)))
+                promise(.failure(.firebaseLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(error: error))))
             }
             
             guard configuration.email.isValid else { handle(error: .emailIsNotValid); return }

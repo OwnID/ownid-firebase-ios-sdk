@@ -29,6 +29,12 @@ public extension OwnID.FirebaseSDK.FlowLogEntry {
     }
 }
 
+extension OwnID.CoreSDK.CoreErrorLogWrapper {
+    static func firebaseLog(entry: OwnID.FirebaseSDK.FlowLogEntry, error: OwnID.CoreSDK.Error) -> OwnID.CoreSDK.CoreErrorLogWrapper {
+        OwnID.CoreSDK.CoreErrorLogWrapper(entry: entry, error: error)
+    }
+}
+
 extension LoggerProtocol {
     func logFirebase(entry: OwnID.FirebaseSDK.FlowLogEntry) {
         self.log(entry)

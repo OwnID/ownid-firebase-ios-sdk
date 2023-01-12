@@ -25,13 +25,10 @@ extension OwnID.FirebaseSDK.LoginPerformer: LoginPerformer { }
 public extension OwnID.FirebaseSDK {
     enum SignIn {
         static func signIn(payload: OwnID.CoreSDK.Payload, auth: Auth) -> EventPublisher {
-            Future<VoidOperationResult, OwnID.CoreSDK.Error> { promise in
+            Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
                 let idToken = (payload.dataContainer as? [String: Any])?["idToken"] as? String
                 func handle(error: OwnID.FirebaseSDK.Error) {
-                    OwnID.CoreSDK.logger.logFirebase(entry: .errorEntry(context: payload.context,
-                                                                        message: "error: \(error.localizedDescription), idtoken: \(String(describing: idToken))",
-                                                                        Self.self))
-                    promise(.failure(.plugin(error: error)))
+                    promise(.failure(.firebaseLog(entry: .errorEntry(context: payload.context, Self.self), error: .plugin(error: error))))
                 }
                 guard let idToken else { handle(error: .tokenIsMissing); return }
                 auth.signIn(withCustomToken: idToken) { auth, error in
