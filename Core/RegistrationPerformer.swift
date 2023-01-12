@@ -36,7 +36,7 @@ extension OwnID.FirebaseSDK {
     static func register(auth: Auth, db: Firestore, configuration: OwnID.FlowsSDK.RegistrationConfiguration) -> EventPublisher {
         Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
             func handle(error: OwnID.FirebaseSDK.Error) {
-                promise(.failure(.firebaseLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(error: error))))
+                promise(.failure(.firebaseLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(underlying: error))))
             }
             
             guard configuration.email.isValid else { handle(error: .emailIsNotValid); return }
