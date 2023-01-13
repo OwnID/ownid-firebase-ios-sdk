@@ -28,7 +28,7 @@ public extension OwnID.FirebaseSDK {
             Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
                 let idToken = (payload.dataContainer as? [String: Any])?["idToken"] as? String
                 func handle(error: OwnID.FirebaseSDK.Error) {
-                    promise(.failure(.firebaseLog(entry: .errorEntry(context: payload.context, Self.self), error: .plugin(underlying: error))))
+                    promise(.failure(.coreLog(entry: .errorEntry(context: payload.context, Self.self), error: .plugin(underlying: error))))
                 }
                 guard let idToken else { handle(error: .tokenIsMissing); return }
                 auth.signIn(withCustomToken: idToken) { auth, error in
@@ -36,7 +36,7 @@ public extension OwnID.FirebaseSDK {
                         handle(error: .firebaseSDK(error: error))
                     }
                     guard auth != nil else { handle(error: .firebaseAuthIsMissing); return }
-                    OwnID.CoreSDK.logger.logFirebase(entry: .entry(context: payload.context, Self.self))
+                    OwnID.CoreSDK.logger.logCore(.entry(context: payload.context, Self.self))
                     promise(.success(VoidOperationResult()))
                 }
             }

@@ -36,7 +36,7 @@ extension OwnID.FirebaseSDK {
     static func register(auth: Auth, db: Firestore, configuration: OwnID.FlowsSDK.RegistrationConfiguration) -> EventPublisher {
         Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
             func handle(error: OwnID.FirebaseSDK.Error) {
-                promise(.failure(.firebaseLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(underlying: error))))
+                promise(.failure(.coreLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(underlying: error))))
             }
             
             guard configuration.email.isValid else { handle(error: .emailIsNotValid); return }
@@ -48,7 +48,7 @@ extension OwnID.FirebaseSDK {
                     return
                 }
                 guard let user = auth?.user else { handle(error: .firebaseAuthIsMissing); return }
-                OwnID.CoreSDK.logger.logFirebase(entry: .entry(context: configuration.payload.context, Self.self))
+                OwnID.CoreSDK.logger.logCore(.entry(context: configuration.payload.context, Self.self))
                 
                 guard let sessionData = configuration.payload.metadata,
                       let jsonData = try? JSONSerialization.data(withJSONObject: sessionData),
