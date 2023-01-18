@@ -316,7 +316,7 @@ If you followed the recommendation to add `OwnIDConfiguration.plist` to your pro
 By default, the OwnID Web App is launched with a language TAGs list (well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language)) based on the device locales set by the user in system. You can override this behavior and set the Web App language list manually by passing languages in an array. Example:
 
 ```swift
-OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, webLanguages: OwnID.CoreSDK.Languages.init(rawValue: ["he"]))
+OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, supportedLanguages: OwnID.CoreSDK.Languages.init(rawValue: ["he"]))
 ```
 
 ## Manually Invoke OwnID Flow

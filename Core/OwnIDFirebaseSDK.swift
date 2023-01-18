@@ -6,7 +6,7 @@ import SwiftUI
 
 extension OwnID.FirebaseSDK {
     static let sdkName = "Firebase"
-    static let version = "2.1.1"
+    static let version = "2.2.0"
 }
 
 public extension OwnID {
@@ -19,26 +19,30 @@ public extension OwnID {
         }
         
         /// Standart configuration, searches for default .plist file
-        public static func configure() {
-            OwnID.CoreSDK.shared.configure(userFacingSDK: info(), underlyingSDKs: [])
+        public static func configure(supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages)) {
+            OwnID.CoreSDK.shared.configure(userFacingSDK: info(), underlyingSDKs: [], supportedLanguages: supportedLanguages)
         }
         
         /// Configures SDK from URL
         /// - Parameter plistUrl: Config plist URL
-        public static func configure(plistUrl: URL) {
-            OwnID.CoreSDK.shared.configureFor(plistUrl: plistUrl, userFacingSDK: info(), underlyingSDKs: [])
+        public static func configure(plistUrl: URL, supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages)) {
+            OwnID.CoreSDK.shared.configureFor(plistUrl: plistUrl, userFacingSDK: info(), underlyingSDKs: [], supportedLanguages: supportedLanguages)
         }
         
         /// Configures SDK from parameters
         /// - Parameters:
         ///   - serverURL: ServerURL
         ///   - redirectionURL: RedirectionURL
-        public static func configure(appID: String, redirectionURL: String, environment: String? = .none) {
+        public static func configure(appID: String,
+                                     redirectionURL: String,
+                                     environment: String? = .none,
+                                     supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages)) {
             OwnID.CoreSDK.shared.configure(appID: appID,
                                            redirectionURL: redirectionURL,
                                            userFacingSDK: info(),
                                            underlyingSDKs: [],
-                                           environment: environment)
+                                           environment: environment,
+                                           supportedLanguages: supportedLanguages)
         }
         
         /// Used to handle the redirects from browser after webapp is finished
@@ -52,21 +56,21 @@ public extension OwnID {
         /// Creates view model for register flow in Firebase and manages ``OwnID.FlowsSDK.RegisterView``
         /// - Parameters:
         ///   - auth: Firebase Auth
+        ///   - firestore: Firestore
         /// - Returns: View model for register flow
-        public static func registrationViewModel(webLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages),
+        public static func registrationViewModel(supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages),
                                                  auth: Auth = .auth(),
                                                  firestore: Firestore = .firestore()) -> OwnID.FlowsSDK.RegisterView.ViewModel {
             let performer = RegistrationPerformer(auth: auth, firestore: firestore)
             let performerLogin = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.RegisterView.ViewModel(registrationPerformer: performer,
                                                          loginPerformer: performerLogin,
-                                                         sdkConfigurationName: sdkName,
-                                                         webLanguages: webLanguages)
+                                                         sdkConfigurationName: sdkName)
         }
         
         /// View that encapsulates management of ``OwnID.CoreSDK.SkipPasswordView`` state
         /// - Parameter viewModel: ``OwnID.FlowsSDK.RegisterView.ViewModel``
-        /// - Parameter webLanguages: Languages for web view. List of well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language) .
+        /// - Parameter supportedLanguages: Languages for web view. List of well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language) .
         /// - Parameter email: to be used toregister. Displayed when logging in
         /// - Parameter visualConfig: contains information about how views will look like
         /// - Returns: View to display
@@ -81,14 +85,11 @@ public extension OwnID {
         /// Creates view model for login flow in Firebase and manages ``OwnID.FlowsSDK.LoginView``
         /// - Parameters:
         ///   - auth: Firebase Auth
-        ///   - webLanguages: Languages for web view. List of well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language) .
         /// - Returns: View model for log in
-        public static func loginViewModel(auth: Auth = .auth(),
-                                          webLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages)) -> OwnID.FlowsSDK.LoginView.ViewModel {
+        public static func loginViewModel(auth: Auth = .auth()) -> OwnID.FlowsSDK.LoginView.ViewModel {
             let performer = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.LoginView.ViewModel(loginPerformer: performer,
-                                                      sdkConfigurationName: sdkName,
-                                                      webLanguages: webLanguages)
+                                                      sdkConfigurationName: sdkName)
         }
         
         /// View that encapsulates management of ``OwnID.CoreSDK.SkipPasswordView`` state
