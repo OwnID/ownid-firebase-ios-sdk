@@ -77,10 +77,12 @@ public extension OwnID {
         ///
         /// - Parameters:
         ///   - auth: Firebase Auth
-        public static func loginViewModel(auth: Auth = .auth()) -> OwnID.FlowsSDK.LoginView.ViewModel {
+        public static func loginViewModel(auth: Auth = .auth(),
+                                          emailPublisher: AnyPublisher<String, Never>) -> OwnID.FlowsSDK.LoginView.ViewModel {
             let performer = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.LoginView.ViewModel(loginPerformer: performer,
-                                                      sdkConfigurationName: sdkName)
+                                                      sdkConfigurationName: sdkName,
+                                                      emailPublisher: emailPublisher)
         }
         
         ///
