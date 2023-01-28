@@ -21,7 +21,6 @@ The OwnID Firebase-iOS SDK is a client library written in Swift that provides a 
 * [Errors](#errors)
 * [Advanced Configuration](#advanced-configuration)
   + [Alternative Syntax for Configure Function 🎛](#alternative-syntax-for-configure-function-)
-  + [OwnID Web App language](#ownid-web-app-language)
   + [Manually Invoke OwnID Flow](#manually-invoke-ownid-flow)
 * [Logging](#logging)
 
@@ -73,7 +72,7 @@ import OwnIDFirebaseSDK
 ## Initialize the SDK
 The OwnID SDK must be initialized properly using the `configure()` function, preferably in the main entry point of your app (in the `@main` `App` struct). Or in AppDelegate. For example, enter:
 
-[Complete example](https://github.com/OwnID/ownid-ios-sdk-demo/blob/master/FirebaseDemo/RegisterViewModel.swift)
+[Complete example](https://github.com/OwnID/ownid-ios-sdk-demo/blob/master/FirebaseDemo/FirebaseDemoApp.swift)
 ```swift
 @main
 struct ExampleApp: App {
@@ -97,11 +96,13 @@ The OwnID view that inserts the Skip Password UI is bound to an instance of the 
 ```swift
 final class MyRegisterViewModel: ObservableObject {
     // MARK: OwnID
-    let ownIDViewModel = OwnID.FirebaseSDK.registrationViewModel()
+    let ownIDViewModel = OwnID.FirebaseSDK.registrationViewModel(emailPublisher: AnyPublisher<String, Never>)
 }
 ```
 
-After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the OwnID Web App. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events (it can be placed just after the code that creates the OwnID view model instance).
+Where `emailPublisher` provides input that user is typing into email field. See example of `@Published` property in demo app.
+
+ After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events (it can be placed just after the code that creates the OwnID view model instance).
 
 [Complete example](https://github.com/OwnID/ownid-ios-sdk-demo/blob/master/FirebaseDemo/RegisterViewModel.swift)
 ```swift
@@ -124,12 +125,8 @@ final class MyRegisterViewModel: ObservableObject {
                    // in OwnID Web App
                    
                    case .readyToRegister:
-                     // If needed, ask user to enter
-                     // email (mandatory) and call
-                     // OwnID.FlowsSDK.RegisterView.ViewModel.
-                     // register(with email: String)
-                     // to finish registration
-                     ownIDViewModel.register(with: email)
+                     // To finish registration call
+                     ownIDViewModel.register()
 
                    // Event when OwnID creates Firebase
                    // account and logs in user
@@ -141,7 +138,7 @@ final class MyRegisterViewModel: ObservableObject {
                      // in Firebase
                      
                    case .loading:
-                     // Display loading indicator according to your designs
+                     // Button displays customizable loader
 		     
 		               case .resetTapped:
 		                 // User tapped activeted button. Rest any data if
@@ -157,30 +154,18 @@ final class MyRegisterViewModel: ObservableObject {
 }
 ```
 
-We recommend showing tooltip for user when valid email is entered. Tooltip is kind of popup that gives hint for user to use OwnID button. You can use your own email validation, along with custom logic how to show this suggestion popup.
-
-For example, when user entered valid email, we use binding in OwnID view model to display tooltip.
-
-[Complete example](https://github.com/OwnID/ownid-ios-sdk-demo/blob/master/FirebaseDemo/RegisterViewModel.swift)
-```swift
-// recommended approach is to subscribe to publised property of email and use 
-// .removeDuplicates() along with .debounce
-ownIDViewModel.shouldShowTooltip = ownIDViewModel.shouldShowTooltipEmailProcessingClosure(emailValue)
-//...
-```
-
 **Important:** The OwnID `ownIDViewModel.register` function must be called in response to the `.readyToRegister` event. This `ownIDViewModel.register` function eventually calls the standard Firebase function `createUser(withEmail: password:)` to register the user in Firebase, so you do not need to call this Firebase function yourself.
 
 ### Add the OwnID View
-Inserting the OwnID view into your View layer results in the OwnID button appearing in your app. When the user selects OwnID button, the SDK presents in app Safari browser to interact with the user. The code that creates this view accepts the OwnID view model as its argument. It is suggested that you pass user's email binding for properly creating accounts.
+Inserting the OwnID view into your View layer results in the OwnID button appearing in your app. The code that creates this view accepts the OwnID view model as its argument.
 
-It is reccomended to set height of button the same as text field and disable text field when OwnID is enabled. 
+It is reccomended to set height of button the same as text field and disable text field when OwnID is enabled.  
 
 [Complete example](https://github.com/OwnID/ownid-ios-sdk-demo/blob/master/FirebaseDemo/RegisterView.swift)
 ```swift
 //Put RegisterView inside your main view, preferably besides password field
 var body: some View {
-    OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, email: usersEmail)
+    OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel)
 }
 ```
 
@@ -196,9 +181,11 @@ You need to create an instance of the view model, `OwnID.LoginView.ViewModel`, t
 ```swift
 final class MyLogInViewModel: ObservableObject {
     // MARK: OwnID
-    let ownIDViewModel = OwnID.FirebaseSDK.loginViewModel()
+    let ownIDViewModel = OwnID.FirebaseSDK.loginViewModel(emailPublisher: AnyPublisher<String, Never>)
 }
 ```
+
+Where `emailPublisher` provides input that user is typing into email field. See example of `@Published` property in demo app.
 
 After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the Skip Password option. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events.
 
@@ -224,7 +211,7 @@ final class MyLogInViewModel: ObservableObject {
                      // User is logged in with OwnID
 
                    case .loading:
-                     // Display loading indicator according to your designs
+                     // Button displays customizable loader
                    }
 
                case .failure(let error):
@@ -244,17 +231,12 @@ Inserting the OwnID view into your View layer results in the Skip Password optio
 //Put LoginView inside your main view, preferably below password field
 var body: some View {
   //...
-  // User's email binding `$viewModel.email` is used to display identity
-  // name when logging in. Additionally, this email is used to get
-  // information if user already has OwnID account
-  OwnID.FirebaseSDK.createLoginView(viewModel: viewModel.ownIDViewModel,
-                                    usersEmail: $viewModel.email)
+  OwnID.FirebaseSDK.createLoginView(viewModel: viewModel.ownIDViewModel)
   //...
 }
 ```
 
 By default, tooltip popup will appear every time login view is shown.
-Use `shouldShowTooltip` to disable tooltip appear of tooltip completely. To do this, use assign `false`.
 
 
 ## Errors
@@ -291,18 +273,13 @@ case .plugin(let pluginError):
 
 ### Button Apperance
 It is possible to set button visual settings by passing `OwnID.UISDK.VisualLookConfig`. Additionally, you can override default behaviour of tooltip appearing or other settings in `OwnID.UISDK.TooltipVisualLookConfig`.
-By passing `widgetPosition`, `or` text view will change it's position accordingly.
+By passing `widgetPosition`, `or` text view will change it's position accordingly. It is possible to modify look & behaviour of loader by modifying default settings of `loaderViewConfig` parameter.
 
 ```swift
-let tooltipConfig = OwnID.UISDK.TooltipVisualLookConfig(backgroundColor: .pink,
-                                                        borderColor: .accentColor)
-let config = OwnID.UISDK.VisualLookConfig(biometryIconColor: .red,
-                                          shadowColor: .cyan,
-                                          tooltipVisualLookConfig: tooltipConfig, 
- 					  widgetPosition: .start)
-OwnID.FirebaseSDK.createLoginView(viewModel: ownIDViewModel,
-                                  usersEmail: usersEmail,
-                                  visualConfig: config)
+let config = OwnID.UISDK.VisualLookConfig(buttonViewConfig: .init(iconColor: .red, shadowColor: .cyan),
+                                          tooltipVisualLookConfig: .init(borderColor: .indigo, tooltipPosition: .bottom),
+                                          loaderViewConfig: .init(spinnerColor: .accentColor, isSpinnerEnabled: false))
+OwnID.FirebaseSDK.createLoginView(viewModel: ownIDViewModel, visualConfig: config)
 ```
 
 ### Alternative Syntax for Configure Function 🎛
@@ -311,12 +288,11 @@ If you followed the recommendation to add `OwnIDConfiguration.plist` to your pro
 * `OwnID.FirebaseSDK.configure(plistUrl: plist)` explicitly provides the path to the OwnID configuration file, where `plist` is the path to the file.
 * `OwnID.FirebaseSDK.configure(appID: String, redirectionURL: URL)` explicitly defines the configuration options rather than using a PLIST file. The app id is unique to your OwnID application, and can be obtained in the [OwnID Console](https://console.ownid.com). The redirection URL is your app's redirection URL, including its custom scheme.
 
-### OwnID Web App language
+By default, SDK uses language TAGs list (well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language)) based on the device locales set by the user in system. You can override this behavior by passing language list manually by passing languages in an array.
 
-By default, the OwnID Web App is launched with a language TAGs list (well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language)) based on the device locales set by the user in system. You can override this behavior and set the Web App language list manually by passing languages in an array. Example:
-
+Optionally provide list of supported languages of `OwnID.CoreSDK.Languages` as `supportedLanguages` parameter.
 ```swift
-OwnID.FirebaseSDK.createRegisterView(viewModel: viewModel.ownIDViewModel, supportedLanguages: OwnID.CoreSDK.Languages.init(rawValue: ["he"]))
+OwnID.FirebaseSDK.configure(supportedLanguages: .init(rawValue: ["he"]))
 ```
 
 ## Manually Invoke OwnID Flow
@@ -324,25 +300,17 @@ As alternative to OwnID button it is possible to use custom view to call functio
 
 Create simple `PassthroughSubject`. After you created custom view, on press send void action through this `PassthroughSubject`. In your `viewModel`, make `ownIDViewModel` to subscribe to this newly created publisher.
 
-[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/ownid-demo-components-ios/DemoAppComponents/LoggedOut/LogIn/LogInView.swift)
+[Complete example](https://github.com/OwnID/ownid-ios-sdk-demo/blob/master/CustomIntegrationCustomViewDemo/LogInViewModel.swift)
 
 ```swift
-ownIDViewModel.subscribe(to: self.buttonPressedPublisher.eraseToAnyPublisher())
-```
-
-[Complete example](https://github.com/OwnID/ownid-demo-ios-sdk/blob/master/ownid-demo-components-ios/DemoAppComponents/LoggedOut/LogIn/LogInViewModel.swift)
-
-Good practice is to pass closure to `ownIDViewModel` for it to be able to pass email down to web app. Assign email closure:
-
-```swift
-ownIDViewModel.getEmail = { self.email }
+ownIDViewModel.subscribe(to: customButtonPublisher.eraseToAnyPublisher())
 ```
 
 Additionally you can reset view by calling `ownIDViewModel.resetState()`.
 
 
 ## Logging
-You can enable console logging by calling `OwnID.startDebugConsoleLogger()`.
+You can enable Xcode console & Console.app logging by calling `OwnID.startDebugConsoleLogger()`.
 
 
 ## License

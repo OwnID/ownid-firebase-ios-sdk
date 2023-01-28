@@ -23,18 +23,13 @@ public extension OwnID {
             OwnID.CoreSDK.shared.configure(userFacingSDK: info(), underlyingSDKs: [], supportedLanguages: supportedLanguages)
         }
         
-        /// Configures SDK from URL
-        /// - Parameter plistUrl: Config plist URL
+        /// Configures SDK from plist path URL
         public static func configure(plistUrl: URL, supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages)) {
             OwnID.CoreSDK.shared.configureFor(plistUrl: plistUrl, userFacingSDK: info(), underlyingSDKs: [], supportedLanguages: supportedLanguages)
         }
         
-        /// Configures SDK from parameters
-        /// - Parameters:
-        ///   - serverURL: ServerURL
-        ///   - redirectionURL: RedirectionURL
-        public static func configure(appID: String,
-                                     redirectionURL: String,
+        public static func configure(appID: OwnID.CoreSDK.AppID,
+                                     redirectionURL: OwnID.CoreSDK.RedirectionURLString,
                                      environment: String? = .none,
                                      supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages)) {
             OwnID.CoreSDK.shared.configure(appID: appID,
@@ -45,64 +40,40 @@ public extension OwnID {
                                            supportedLanguages: supportedLanguages)
         }
         
-        /// Used to handle the redirects from browser after webapp is finished
-        /// - Parameter url: URL returned from webapp after it has finished
+        /// Handles redirects from other flows back to the app
         public static func handle(url: URL) {
             OwnID.CoreSDK.shared.handle(url: url, sdkConfigurationName: sdkName)
         }
         
         // MARK: View Model Flows
         
-        /// Creates view model for register flow in Firebase and manages ``OwnID.FlowsSDK.RegisterView``
-        /// - Parameters:
-        ///   - auth: Firebase Auth
-        ///   - firestore: Firestore
-        /// - Returns: View model for register flow
-        public static func registrationViewModel(supportedLanguages: OwnID.CoreSDK.Languages = .init(rawValue: Locale.preferredLanguages),
-                                                 auth: Auth = .auth(),
-                                                 firestore: Firestore = .firestore()) -> OwnID.FlowsSDK.RegisterView.ViewModel {
+        public static func registrationViewModel(auth: Auth = .auth(),
+                                                 firestore: Firestore = .firestore(),
+                                                 emailPublisher: OwnID.CoreSDK.EmailPublisher) -> OwnID.FlowsSDK.RegisterView.ViewModel {
             let performer = RegistrationPerformer(auth: auth, firestore: firestore)
             let performerLogin = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.RegisterView.ViewModel(registrationPerformer: performer,
                                                          loginPerformer: performerLogin,
-                                                         sdkConfigurationName: sdkName)
+                                                         sdkConfigurationName: sdkName,
+                                                         emailPublisher: emailPublisher)
         }
         
-        /// View that encapsulates management of ``OwnID.CoreSDK.SkipPasswordView`` state
-        /// - Parameter viewModel: ``OwnID.FlowsSDK.RegisterView.ViewModel``
-        /// - Parameter supportedLanguages: Languages for web view. List of well-formed [IETF BCP 47 language tag](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Language) .
-        /// - Parameter email: to be used toregister. Displayed when logging in
-        /// - Parameter visualConfig: contains information about how views will look like
-        /// - Returns: View to display
         public static func createRegisterView(viewModel: OwnID.FlowsSDK.RegisterView.ViewModel,
-                                              email: Binding<String>,
                                               visualConfig: OwnID.UISDK.VisualLookConfig = .init()) -> OwnID.FlowsSDK.RegisterView {
-            OwnID.FlowsSDK.RegisterView(viewModel: viewModel,
-                                        usersEmail: email,
-                                        visualConfig: visualConfig)
+            OwnID.FlowsSDK.RegisterView(viewModel: viewModel, visualConfig: visualConfig)
         }
         
-        /// Creates view model for login flow in Firebase and manages ``OwnID.FlowsSDK.LoginView``
-        /// - Parameters:
-        ///   - auth: Firebase Auth
-        /// - Returns: View model for log in
-        public static func loginViewModel(auth: Auth = .auth()) -> OwnID.FlowsSDK.LoginView.ViewModel {
+        public static func loginViewModel(auth: Auth = .auth(),
+                                          emailPublisher: OwnID.CoreSDK.EmailPublisher) -> OwnID.FlowsSDK.LoginView.ViewModel {
             let performer = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.LoginView.ViewModel(loginPerformer: performer,
-                                                      sdkConfigurationName: sdkName)
+                                                      sdkConfigurationName: sdkName,
+                                                      emailPublisher: emailPublisher)
         }
         
-        /// View that encapsulates management of ``OwnID.CoreSDK.SkipPasswordView`` state
-        /// - Parameter viewModel: ``OwnID.FlowsSDK.LoginView.ViewModel``
-        /// - Parameter usersEmail: Email to be used in link and login flow. Displayed when logging in
-        /// - Parameter visualConfig: contains information about how views will look like
-        /// - Returns: View to display
         public static func createLoginView(viewModel: OwnID.FlowsSDK.LoginView.ViewModel,
-                                           usersEmail: Binding<String>,
                                            visualConfig: OwnID.UISDK.VisualLookConfig = .init()) -> OwnID.FlowsSDK.LoginView {
-            OwnID.FlowsSDK.LoginView(viewModel: viewModel,
-                                     usersEmail: usersEmail,
-                                     visualConfig: visualConfig)
+            OwnID.FlowsSDK.LoginView(viewModel: viewModel, visualConfig: visualConfig)
         }
     }
 }
