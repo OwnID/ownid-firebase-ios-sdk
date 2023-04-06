@@ -4,7 +4,7 @@ import Combine
 import SwiftUI
 @_exported import OwnIDCoreSDK
 
-extension OwnID.FirebaseSDK {
+public extension OwnID.FirebaseSDK {
     static let sdkName = "Firebase"
     static let version = "2.2.0"
 }
@@ -74,6 +74,18 @@ public extension OwnID {
         public static func createLoginView(viewModel: OwnID.FlowsSDK.LoginView.ViewModel,
                                            visualConfig: OwnID.UISDK.VisualLookConfig = .init()) -> OwnID.FlowsSDK.LoginView {
             OwnID.FlowsSDK.LoginView(viewModel: viewModel, visualConfig: visualConfig)
+        }
+        
+        public static func instantConncectViewModel(sdkConfigurationName: String = sdkName) -> OwnID.FlowsSDK.LoginView.ViewModel {
+            loginViewModel(emailPublisher: Just("").eraseToAnyPublisher())
+        }
+        
+        public static func showInstantConnectView(viewModel: OwnID.FlowsSDK.LoginView.ViewModel,
+                                                  sdkConfigurationName: String = sdkName,
+                                                  visualConfig: OwnID.UISDK.VisualLookConfig = .init()) {
+            OwnID.UISDK.showInstantConnectView(viewModel: viewModel,
+                                               sdkConfigurationName: sdkConfigurationName,
+                                               visualConfig: visualConfig)
         }
     }
 }
