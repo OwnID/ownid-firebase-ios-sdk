@@ -49,13 +49,13 @@ public extension OwnID {
         
         public static func registrationViewModel(auth: Auth = .auth(),
                                                  firestore: Firestore = .firestore(),
-                                                 emailPublisher: OwnID.CoreSDK.EmailPublisher) -> OwnID.FlowsSDK.RegisterView.ViewModel {
+                                                 loginIdPublisher: OwnID.CoreSDK.LoginIdPublisher) -> OwnID.FlowsSDK.RegisterView.ViewModel {
             let performer = RegistrationPerformer(auth: auth, firestore: firestore)
             let performerLogin = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.RegisterView.ViewModel(registrationPerformer: performer,
                                                          loginPerformer: performerLogin,
                                                          sdkConfigurationName: sdkName,
-                                                         emailPublisher: emailPublisher)
+                                                         loginIdPublisher: loginIdPublisher)
         }
         
         public static func createRegisterView(viewModel: OwnID.FlowsSDK.RegisterView.ViewModel,
@@ -64,11 +64,11 @@ public extension OwnID {
         }
         
         public static func loginViewModel(auth: Auth = .auth(),
-                                          emailPublisher: OwnID.CoreSDK.EmailPublisher) -> OwnID.FlowsSDK.LoginView.ViewModel {
+                                          loginIdPublisher: OwnID.CoreSDK.LoginIdPublisher) -> OwnID.FlowsSDK.LoginView.ViewModel {
             let performer = LoginPerformer(auth: auth, sdkConfigurationName: sdkName)
             return OwnID.FlowsSDK.LoginView.ViewModel(loginPerformer: performer,
                                                       sdkConfigurationName: sdkName,
-                                                      emailPublisher: emailPublisher)
+                                                      loginIdPublisher: loginIdPublisher)
         }
         
         public static func createLoginView(viewModel: OwnID.FlowsSDK.LoginView.ViewModel,

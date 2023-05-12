@@ -39,8 +39,7 @@ extension OwnID.FirebaseSDK {
                 promise(.failure(.coreLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(underlying: error))))
             }
             
-            guard configuration.email.isValid else { handle(error: .emailIsNotValid); return }
-            auth.createUser(withEmail: configuration.email.rawValue,
+            auth.createUser(withEmail: configuration.loginId,
                             password: OwnID.FlowsSDK.Password.generatePassword().passwordString)
             { auth, error in
                 if let error {
