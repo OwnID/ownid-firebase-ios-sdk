@@ -12,7 +12,7 @@ extension OwnID.FirebaseSDK {
             self.sdkConfigurationName = sdkConfigurationName
         }
         
-        func login(payload: OwnID.CoreSDK.Payload, email: String) -> OwnID.LoginResultPublisher {
+        func login(payload: OwnID.CoreSDK.Payload, loginId: String) -> OwnID.LoginResultPublisher {
             OwnID.FirebaseSDK.SignIn.signIn(payload: payload, auth: auth)
                 .map { OwnID.LoginResult(operationResult: $0 as OperationResult) }
                 .eraseToAnyPublisher()
@@ -23,10 +23,14 @@ extension OwnID.FirebaseSDK {
 extension OwnID.FirebaseSDK.LoginPerformer: LoginPerformer { }
 
 public extension OwnID.FirebaseSDK {
+    private struct Constants {
+        static let idTokenKey = "idToken"
+    }
+    
     enum SignIn {
         static func signIn(payload: OwnID.CoreSDK.Payload, auth: Auth) -> EventPublisher {
             Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
-                let idToken = (payload.dataContainer as? [String: Any])?["idToken"] as? String
+                let idToken = (payload.dataContainer as? [String: Any])?[Constants.idTokenKey] as? String
                 func handle(error: OwnID.FirebaseSDK.Error) {
                     promise(.failure(.coreLog(entry: .errorEntry(context: payload.context, Self.self), error: .plugin(underlying: error))))
                 }
