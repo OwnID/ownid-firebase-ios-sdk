@@ -10,6 +10,7 @@ public extension OwnID.FirebaseSDK {
         case mainSDKCancelled
         case tokenIsMissing
         case metadataIsMissing
+        case loginIdMismatch
     }
 }
 
@@ -30,6 +31,8 @@ extension OwnID.FirebaseSDK.Error: LocalizedError {
             return "Auth is missing"
         case .metadataIsMissing:
             return "Metadata is missing"
+        case .loginIdMismatch:
+            return "Email is not valid"
         }
     }
 }
