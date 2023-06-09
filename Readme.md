@@ -259,11 +259,8 @@ case .emailIsInvalid:
 case .flowCancelled:
     print("flowCancelled")
 
-case .statusRequestResponseIsEmpty:
-    print("statusRequestResponseIsEmpty")
-
-case .statusRequestFail(underlying: let underlying):
-    print("statusRequestFail: \(underlying)")
+case .requestResponseIsEmpty:
+    print("requestResponseIsEmpty")
 
 case .plugin(let pluginError):
     print("plugin: \(pluginError)")
