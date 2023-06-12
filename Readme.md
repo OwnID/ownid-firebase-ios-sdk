@@ -50,6 +50,8 @@ When the application starts, the OwnID SDK automatically reads `OwnIDConfigurati
 	<string>com.myapp.demo://bazco</string>
 	<key>OwnIDAppID</key>
 	<string>4tb9nt6iaur0zv</string>
+    <key>OwnIDEnv</key>
+    <string>uat</string>   
 </dict>
 </plist>
 ```
@@ -57,6 +59,7 @@ Where:
 
 - The `OwnIDAppID` is the unique AppID, which you can obtain from the [OwnID Console](https://console.ownid.com).
 - The `OwnIDRedirectionURL` is the full redirection URL, including its custom scheme. This URL custom scheme must match the one that you defined in your target.
+- The `OwnIDEnv` represents the OwnID environment. Configure the value `uat` when using OwnID’s UAT environment. You must remove this parameter for production.
 
 ## Create URL Type (Custom URL Scheme)
 You need to open your project and create a new URL type that corresponds to the redirection URL specified in `OwnIDConfiguration.plist`. In Xcode, go to **Info > URL Types**, and then use the **URL Schemes** field to specify the redirection URL. For example, if the value of the `OwnIDRedirectionURL` key is `com.myapp.demo://bazco`, then you could copy `com.myapp.demo` and paste it into the **URL Schemes** field.
