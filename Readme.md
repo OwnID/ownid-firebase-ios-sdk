@@ -46,12 +46,12 @@ When the application starts, the OwnID SDK automatically reads `OwnIDConfigurati
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>OwnIDRedirectionURL</key>
-	<string>com.myapp.demo://bazco</string>
-	<key>OwnIDAppID</key>
-	<string>4tb9nt6iaur0zv</string>
-    <key>OwnIDEnv</key>
-    <string>uat</string>   
+        <key>OwnIDRedirectionURL</key>
+        <string>com.myapp.demo://bazco</string>
+        <key>OwnIDAppID</key>
+        <string>4tb9nt6iaur0zv</string>
+        <key>OwnIDEnv</key>
+        <string>uat</string>   
 </dict>
 </plist>
 ```
