@@ -23,7 +23,7 @@ extension OwnID.FirebaseSDK {
 extension OwnID.FirebaseSDK.LoginPerformer: LoginPerformer { }
 
 public extension OwnID.FirebaseSDK {
-    private struct Constants {
+    private enum Constants {
         static let idTokenKey = "idToken"
     }
     
@@ -40,7 +40,7 @@ public extension OwnID.FirebaseSDK {
                         handle(error: .firebaseSDK(error: error))
                     }
                     guard auth != nil else { handle(error: .firebaseAuthIsMissing); return }
-                    OwnID.CoreSDK.logger.logCore(.entry(context: payload.context, Self.self))
+                    OwnID.CoreSDK.logger.log(.entry(context: payload.context, level: .debug, Self.self))
                     promise(.success(VoidOperationResult()))
                 }
             }

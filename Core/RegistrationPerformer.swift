@@ -39,7 +39,7 @@ extension OwnID.FirebaseSDK {
                 promise(.failure(.coreLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(underlying: error))))
             }
             
-            OwnID.CoreSDK.logger.logCore(.entry(context: configuration.payload.context, Self.self))
+            OwnID.CoreSDK.logger.log(.entry(context: configuration.payload.context, level: .debug, Self.self))
             
             guard configuration.loginId == configuration.payload.loginId else {
                 handle(error: .loginIdMismatch)
