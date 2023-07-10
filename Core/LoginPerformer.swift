@@ -31,15 +31,21 @@ public extension OwnID.FirebaseSDK {
         static func signIn(payload: OwnID.CoreSDK.Payload, auth: Auth) -> EventPublisher {
             Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
                 let idToken = (payload.dataContainer as? [String: Any])?[Constants.idTokenKey] as? String
-                func handle(error: OwnID.FirebaseSDK.Error) {
-                    promise(.failure(.coreLog(entry: .errorEntry(context: payload.context, Self.self), error: .plugin(underlying: error))))
+                func handle(error: OwnID.CoreSDK.Error) {
+                    promise(.failure(.coreLog(entry: .errorEntry(context: payload.context, Self.self), error: error)))
                 }
-                guard let idToken else { handle(error: .tokenIsMissing); return }
+                guard let idToken else {
+                    handle(error: .internalError(message: ErrorMessage.tokenIsMissing))
+                    return
+                }
                 auth.signIn(withCustomToken: idToken) { auth, error in
                     if let error {
-                        handle(error: .firebaseSDK(error: error))
+                        handle(error: .integrationError(underlying: error))
                     }
-                    guard auth != nil else { handle(error: .firebaseAuthIsMissing); return }
+                    guard auth != nil else {
+                        handle(error: .internalError(message: ErrorMessage.firebaseAuthIsMissing))
+                        return
+                    }
                     OwnID.CoreSDK.logger.log(.entry(context: payload.context, level: .debug, Self.self))
                     promise(.success(VoidOperationResult()))
                 }
