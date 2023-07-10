@@ -35,44 +35,44 @@ extension OwnID.FirebaseSDK {
 extension OwnID.FirebaseSDK {
     static func register(auth: Auth, db: Firestore, configuration: OwnID.FlowsSDK.RegistrationConfiguration) -> EventPublisher {
         Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
-            func handle(error: OwnID.FirebaseSDK.Error) {
-                promise(.failure(.coreLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: .plugin(underlying: error))))
+            func handle(error: OwnID.CoreSDK.Error) {
+                promise(.failure(.coreLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: error)))
             }
             
             OwnID.CoreSDK.logger.log(.entry(context: configuration.payload.context, level: .debug, Self.self))
             
             guard configuration.loginId == configuration.payload.loginId else {
-                handle(error: .loginIdMismatch)
+                handle(error: .internalError(message: ErrorMessage.loginIdMismatch))
                 return
             }
             
             guard let sessionData = configuration.payload.metadata,
                   let jsonData = try? JSONSerialization.data(withJSONObject: sessionData),
                   let metadata = try? JSONDecoder().decode(MetadataInfo.self, from: jsonData) else {
-                handle(error: .metadataIsMissing)
+                handle(error: .internalError(message: ErrorMessage.metadataIsMissing))
                 return
             }
             
             guard var docData = configuration.payload.dataContainer as? [String: Any] else {
-                handle(error: .metadataIsMissing)
+                handle(error: .internalError(message: ErrorMessage.metadataIsMissing))
                 return
             }
             
             auth.createUser(withEmail: configuration.loginId,
                             password: OwnID.FlowsSDK.Password.generatePassword().passwordString) { auth, error in
                 if let error {
-                    handle(error: .firebaseSDK(error: error))
+                    handle(error: .integrationError(underlying: error))
                     return
                 }
                 guard let user = auth?.user else {
-                    handle(error: .firebaseAuthIsMissing)
+                    handle(error: .internalError(message: ErrorMessage.firebaseAuthIsMissing))
                     return
                 }
                 
                 docData[metadata.userIdKey] = user.uid
                 db.collection(metadata.collectionName).document(metadata.docId).setData(docData) { error in
                     if let error {
-                        handle(error: .firebaseSDK(error: error))
+                        handle(error: .integrationError(underlying: error))
                     } else {
                         promise(.success(VoidOperationResult()))
                     }
