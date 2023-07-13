@@ -6,6 +6,5 @@ public extension OwnID.FirebaseSDK {
         static let firebaseAuthIsMissing = "Auth is missing"
         static let tokenIsMissing = "Token is missing"
         static let metadataIsMissing = "Metadata is missing"
-        static let loginIdMismatch = "Login Id is not valid"
     }
 }

@@ -35,7 +35,7 @@ public extension OwnID.FirebaseSDK {
                     promise(.failure(.coreLog(entry: .errorEntry(context: payload.context, Self.self), error: error)))
                 }
                 guard let idToken else {
-                    handle(error: .internalError(message: ErrorMessage.tokenIsMissing))
+                    handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.tokenIsMissing)))
                     return
                 }
                 auth.signIn(withCustomToken: idToken) { auth, error in
@@ -43,7 +43,7 @@ public extension OwnID.FirebaseSDK {
                         handle(error: .integrationError(underlying: error))
                     }
                     guard auth != nil else {
-                        handle(error: .internalError(message: ErrorMessage.firebaseAuthIsMissing))
+                        handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.firebaseAuthIsMissing)))
                         return
                     }
                     OwnID.CoreSDK.logger.log(.entry(context: payload.context, level: .debug, Self.self))
