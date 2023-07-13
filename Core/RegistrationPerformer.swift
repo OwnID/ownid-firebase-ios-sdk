@@ -41,31 +41,26 @@ extension OwnID.FirebaseSDK {
             
             OwnID.CoreSDK.logger.log(.entry(context: configuration.payload.context, level: .debug, Self.self))
             
-            guard configuration.loginId == configuration.payload.loginId else {
-                handle(error: .internalError(message: ErrorMessage.loginIdMismatch))
-                return
-            }
-            
             guard let sessionData = configuration.payload.metadata,
                   let jsonData = try? JSONSerialization.data(withJSONObject: sessionData),
                   let metadata = try? JSONDecoder().decode(MetadataInfo.self, from: jsonData) else {
-                handle(error: .internalError(message: ErrorMessage.metadataIsMissing))
+                handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.metadataIsMissing)))
                 return
             }
             
             guard var docData = configuration.payload.dataContainer as? [String: Any] else {
-                handle(error: .internalError(message: ErrorMessage.metadataIsMissing))
+                handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.metadataIsMissing)))
                 return
             }
             
-            auth.createUser(withEmail: configuration.loginId,
+            auth.createUser(withEmail: configuration.payload.loginId ?? "",
                             password: OwnID.FlowsSDK.Password.generatePassword().passwordString) { auth, error in
                 if let error {
                     handle(error: .integrationError(underlying: error))
                     return
                 }
                 guard let user = auth?.user else {
-                    handle(error: .internalError(message: ErrorMessage.firebaseAuthIsMissing))
+                    handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.firebaseAuthIsMissing)))
                     return
                 }
                 
