@@ -46,16 +46,23 @@ When the application starts, the OwnID SDK automatically reads `OwnIDConfigurati
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+        <key>OwnIDRedirectionURL</key>
+        <string>com.myapp.demo://bazco</string>
         <key>OwnIDAppID</key>
         <string>4tb9nt6iaur0zv</string>
+        <key>OwnIDEnv</key>
+        <string>uat</string>   
 </dict>
 </plist>
 ```
 Where:
 
 - The `OwnIDAppID` is the unique AppID, which you can obtain from the [OwnID Console](https://console.ownid.com).
+- The `OwnIDRedirectionURL` is the full redirection URL, including its custom scheme. This URL custom scheme must match the one that you defined in your target.
+- The `OwnIDEnv` represents the OwnID environment. Configure the value `uat` when using OwnID’s UAT environment. You must remove this parameter for production.
 
-For additional configuration options, including environment configuration, see [Advanced Configuration](https://github.com/OwnID/ownid-firebase-ios-sdk#advanced-configuration).
+## Create URL Type (Custom URL Scheme)
+You need to open your project and create a new URL type that corresponds to the redirection URL specified in `OwnIDConfiguration.plist`. In Xcode, go to **Info > URL Types**, and then use the **URL Schemes** field to specify the redirection URL. For example, if the value of the `OwnIDRedirectionURL` key is `com.myapp.demo://bazco`, then you could copy `com.myapp.demo` and paste it into the **URL Schemes** field.
 
 ## Import OwnID Module
 Once you have added the OwnID package dependency, you need to import the OwnID module so you can access the SDK features. As you implement OwnID in your project, add the following to your source files:
@@ -81,7 +88,7 @@ struct ExampleApp: App {
 If you did not follow the recommendation for creating the `OwnIDConfiguration.plist` file, you need to specify arguments when calling the `configure` function. For details, see [Alternative Syntax for Configure Function](#alternative-syntax-for-configure-function-).
 
 ## Implement the Registration Screen
-Within a Model-View-ViewModel (MVVM) architecture pattern, adding the Skip Password option to your registration screen is as easy as adding an OwnID view model and subscription to your app's ViewModel layer, then adding the OwnID view to your main View. That's it! When the user selects Skip Password, your app waits for events while the user interacts with the OwnID flow views, then calls a function to register the user once they have completed the Skip Password process.
+Within a Model-View-ViewModel (MVVM) architecture pattern, adding the Skip Password option to your registration screen is as easy as adding an OwnID view model and subscription to your app's ViewModel layer, then adding the OwnID view to your main View. That's it! When the user selects Skip Password, your app waits for events while the user interacts with the OwnID Web App, then calls a function to register the user once they have completed the Skip Password process.
 
 **Important:** When a user registers with OwnID, a random password is generated and set for the user's Firebase account.
 
@@ -92,11 +99,11 @@ The OwnID view that inserts the Skip Password UI is bound to an instance of the 
 ```swift
 final class MyRegisterViewModel: ObservableObject {
     // MARK: OwnID
-    let ownIDViewModel = OwnID.FirebaseSDK.registrationViewModel(loginIdPublisher: AnyPublisher<String, Never>)
+    let ownIDViewModel = OwnID.FirebaseSDK.registrationViewModel(emailPublisher: AnyPublisher<String, Never>)
 }
 ```
 
-Where `loginIdPublisher` provides input that user is typing into loginID field. See example of `@Published` property in demo app.
+Where `emailPublisher` provides input that user is typing into email field. See example of `@Published` property in demo app.
 
  After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events (it can be placed just after the code that creates the OwnID view model instance).
 
@@ -177,11 +184,11 @@ You need to create an instance of the view model, `OwnID.LoginView.ViewModel`, t
 ```swift
 final class MyLogInViewModel: ObservableObject {
     // MARK: OwnID
-    let ownIDViewModel = OwnID.FirebaseSDK.loginViewModel(loginIdPublisher: AnyPublisher<String, Never>)
+    let ownIDViewModel = OwnID.FirebaseSDK.loginViewModel(emailPublisher: AnyPublisher<String, Never>)
 }
 ```
 
-Where `loginIdPublisher` provides input that user is typing into loginID field. See example of `@Published` property in demo app.
+Where `emailPublisher` provides input that user is typing into email field. See example of `@Published` property in demo app.
 
 After creating this OwnID view model, your View Model layer should listen to events from the OwnID Event Publisher, which allows your app to know what actions to take based on the user's interaction with the Skip Password option. Simply add the following to your existing ViewModel layer to subscribe to the OwnID Event Publisher and respond to events.
 
@@ -238,33 +245,42 @@ By default, tooltip popup will appear every time login view is shown.
 ## Errors
 All errors from the SDK have an `OwnID.CoreSDK.Error` type. You can use them, for example, to properly ask the user to perform an action.
 
-Here are these errors:
+Here are some of the possible errors:
 
 [Complete example](https://github.com/OwnID/ownid-core-ios-sdk/blob/master/Core/Sources/Types/CoreError.swift)
 ```swift
 switch error {
-case flowCancelled(let flow):
+case .unsecuredHttpPassed:
+    print("unsecuredHttpPassed")
+
+case .notValiedRedirectionURLOrNotMatchingFromConfiguration:
+    print("notValiedRedirectionURLOrNotMatchingFromConfiguration")
+
+case .emailIsInvalid:
+    print("emailIsInvalid")
+
+case .flowCancelled:
     print("flowCancelled")
-    
-case userError(let errorModel):
-    print("userError")
-    
-case integrationError(underlying: Swift.Error):
-    print("integrationError")
+
+case .requestResponseIsEmpty:
+    print("requestResponseIsEmpty")
+
+case .plugin(let pluginError):
+    print("plugin: \(pluginError)")
 }
 ```
-
-Where:
- 
-- flowCancelled(flow: FlowType) - Exception that occurs when user cancelled OwnID flow. Usually application can ignore this error.
-- userError(errorModel: UserErrorModel) - Error that is intended to be reported to end user. The userMessage string from UserErrorModel is localized based on OwnID SDK language and can be used as an error message for user.
-- integrationError(underlying: Swift.Error) - General error for wrapping Firebase errors OwnID integrates with. 
-
 ## Advanced Configuration
 
-### Logging
+### Button Apperance
+It is possible to set button visual settings by passing `OwnID.UISDK.VisualLookConfig`. Additionally, you can override default behaviour of tooltip appearing or other settings in `OwnID.UISDK.TooltipVisualLookConfig`.
+By passing `widgetPosition`, `or` text view will change it's position accordingly. It is possible to modify look & behaviour of loader by modifying default settings of `loaderViewConfig` parameter.
 
-OwnID SDK has a Logger that is used to log its events. You can enable Xcode console & Console.app logging by calling `OwnID.CoreSDK.logger.isEnabled = true`. To use a custom Logger, call `OwnID.CoreSDK.logger.setLogger(CustomLogger(), customTag: "CustomTag")`
+```swift
+let config = OwnID.UISDK.VisualLookConfig(buttonViewConfig: .init(iconColor: .red, shadowColor: .cyan),
+                                          tooltipVisualLookConfig: .init(borderColor: .indigo, tooltipPosition: .bottom),
+                                          loaderViewConfig: .init(spinnerColor: .accentColor, isSpinnerEnabled: false))
+OwnID.FirebaseSDK.createLoginView(viewModel: ownIDViewModel, visualConfig: config)
+```
 
 ### Alternative Syntax for Configure Function 🎛
 If you followed the recommendation to add `OwnIDConfiguration.plist` to your project, calling `configure()` without any arguments is enough to initialize the SDK. If you did not follow this recommendation, you can still initialize the SDK with one of the following calls. Remember that these calls should be made within your app's `@main` `App` struct.
@@ -277,52 +293,6 @@ By default, SDK uses language TAGs list (well-formed [IETF BCP 47 language tag](
 Optionally provide list of supported languages of `OwnID.CoreSDK.Languages` as `supportedLanguages` parameter.
 ```swift
 OwnID.FirebaseSDK.configure(supportedLanguages: .init(rawValue: ["he"]))
-``` 
-
-### OwnID environment
-
-By default, the OwnID uses production environment for `appId` specified in configuration. You can set different environment. Possible options are: `uat`, `staging` and `dev`. Use `env` key in configuration json to specify required non-production environment:
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-        <key>OwnIDAppID</key>
-        <string>4tb9nt6iaur0zv</string>
-        <key>OwnIDEnv</key>
-        <string>uat</string>   
-</dict>
-</plist>
-```
-
-### Redirection URI Alternatives
-The redirection URI determines where the user lands once they are done using their browser to interact with the OwnID Web App. You need to open your project and create a new URL type that corresponds to the redirection URL specified in `OwnIDConfiguration.plist`. 
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-        <key>OwnIDAppID</key>
-        <string>4tb9nt6iaur0zv</string>
-        <key>OwnIDRedirectionURL</key>
-        <string>com.myapp.demo://bazco</string>
-</dict>
-</plist>
-```
-
-In Xcode, go to **Info > URL Types**, and then use the **URL Schemes** field to specify the redirection URL. For example, if the value of the `OwnIDRedirectionURL` key is `com.myapp.demo://bazco`, then you could copy `com.myapp.demo` and paste it into the **URL Schemes** field.
-
-### Button Apperance
-It is possible to set button visual settings by passing `OwnID.UISDK.VisualLookConfig`. Additionally, you can override default behaviour of tooltip appearing or other settings in `OwnID.UISDK.TooltipVisualLookConfig`.
-By passing `widgetPosition`, `or` text view will change it's position accordingly. It is possible to modify look & behaviour of loader by modifying default settings of `loaderViewConfig` parameter.
-
-```swift
-let config = OwnID.UISDK.VisualLookConfig(buttonViewConfig: .init(iconColor: .red, shadowColor: .cyan),
-                                          tooltipVisualLookConfig: .init(borderColor: .indigo, tooltipPosition: .bottom),
-                                          loaderViewConfig: .init(spinnerColor: .accentColor, isSpinnerEnabled: false))
-OwnID.FirebaseSDK.createLoginView(viewModel: ownIDViewModel, visualConfig: config)
 ```
 
 ## Manually Invoke OwnID Flow
@@ -337,6 +307,10 @@ ownIDViewModel.subscribe(to: customButtonPublisher.eraseToAnyPublisher())
 ```
 
 Additionally you can reset view by calling `ownIDViewModel.resetState()`.
+
+
+## Logging
+You can enable Xcode console & Console.app logging by calling `OwnID.startDebugConsoleLogger()`.
 
 
 ## License
