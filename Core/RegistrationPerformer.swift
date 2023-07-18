@@ -36,10 +36,10 @@ extension OwnID.FirebaseSDK {
     static func register(auth: Auth, db: Firestore, configuration: OwnID.FlowsSDK.RegistrationConfiguration) -> EventPublisher {
         Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
             func handle(error: OwnID.CoreSDK.Error) {
-                promise(.failure(.coreLog(entry: .errorEntry(context: configuration.payload.context, Self.self), error: error)))
+                promise(.failure(.coreLog(error: error, type: Self.self)))
             }
             
-            OwnID.CoreSDK.logger.log(.entry(context: configuration.payload.context, level: .debug, Self.self))
+            OwnID.CoreSDK.logger.log(level: .debug, Self.self)
             
             guard let sessionData = configuration.payload.metadata,
                   let jsonData = try? JSONSerialization.data(withJSONObject: sessionData),

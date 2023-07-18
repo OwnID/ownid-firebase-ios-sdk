@@ -32,7 +32,7 @@ public extension OwnID.FirebaseSDK {
             Future<VoidOperationResult, OwnID.CoreSDK.CoreErrorLogWrapper> { promise in
                 let idToken = (payload.dataContainer as? [String: Any])?[Constants.idTokenKey] as? String
                 func handle(error: OwnID.CoreSDK.Error) {
-                    promise(.failure(.coreLog(entry: .errorEntry(context: payload.context, Self.self), error: error)))
+                    promise(.failure(.coreLog(error: error, type: Self.self)))
                 }
                 guard let idToken else {
                     handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.tokenIsMissing)))
@@ -46,7 +46,7 @@ public extension OwnID.FirebaseSDK {
                         handle(error: .userError(errorModel: OwnID.CoreSDK.UserErrorModel(message: ErrorMessage.firebaseAuthIsMissing)))
                         return
                     }
-                    OwnID.CoreSDK.logger.log(.entry(context: payload.context, level: .debug, Self.self))
+                    OwnID.CoreSDK.logger.log(level: .debug, Self.self)
                     promise(.success(VoidOperationResult()))
                 }
             }
