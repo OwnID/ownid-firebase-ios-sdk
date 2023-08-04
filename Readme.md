@@ -3,13 +3,12 @@
 
 # OwnID Firebase-iOS SDK
 
-The OwnID Firebase-iOS SDK is a client library written in Swift that provides a passwordless login alternative for your iOS application by using cryptographic keys to replace the traditional password. Integrating the SDK with your iOS app adds a Skip Password option to its registration and login screens. For more general information about OwnID SDKs, see [OwnID iOS SDK](../README.md).
+The OwnID Firebase-iOS SDK is a client library written in Swift that provides a passwordless login alternative for your iOS application by using cryptographic keys to replace the traditional password. Integrating the SDK with your iOS app adds a Skip Password option to its registration and login screens. For more general information about OwnID SDKs, see [OwnID iOS SDK](https://github.com/OwnID/ownid-core-ios-sdk/blob/master/README.md).
 
 ## Table of contents
 * [Before You Begin](#before-you-begin)
 * [Add Package Dependency](#add-package-dependency)
 * [Add Property List File to Project](#add-property-list-file-to-project)
-* [Create URL Type (Custom URL Scheme)](#create-url-type-custom-url-scheme)
 * [Import OwnID Modules](#import-ownid-module)
 * [Initialize the SDK](#initialize-the-sdk)
 * [Implement the Registration Screen](#implement-the-registration-screen)
@@ -20,9 +19,12 @@ The OwnID Firebase-iOS SDK is a client library written in Swift that provides a 
   + [Add OwnID View](#add-ownid-view)
 * [Errors](#errors)
 * [Advanced Configuration](#advanced-configuration)
+  + [Logging Events](#logging-events)
   + [Alternative Syntax for Configure Function 🎛](#alternative-syntax-for-configure-function-)
+  + [OwnID Environment](#ownid-environment)
+  + [Redirection URI Alternatives](#redirection-uri-alternatives)
+  + [Button Apperance](#button-apperance)
   + [Manually Invoke OwnID Flow](#manually-invoke-ownid-flow)
-* [Logging](#logging)
 
 ## Before You Begin
 Before incorporating OwnID into your iOS app, you must create an OwnID application and integrate it with your Firebase project. For step-by-step instructions, see [OwnID-Firebase Integration Basics](firebase-integration-basics.md).
@@ -325,7 +327,7 @@ let config = OwnID.UISDK.VisualLookConfig(buttonViewConfig: .init(iconColor: .re
 OwnID.FirebaseSDK.createLoginView(viewModel: ownIDViewModel, visualConfig: config)
 ```
 
-## Manually Invoke OwnID Flow
+### Manually Invoke OwnID Flow
 As alternative to OwnID button it is possible to use custom view to call functionality. In a nutshell, here it is the same behaviour from `ownIDViewModel`, just with your custom view provided.
 
 Create simple `PassthroughSubject`. After you created custom view, on press send void action through this `PassthroughSubject`. In your `viewModel`, make `ownIDViewModel` to subscribe to this newly created publisher.
