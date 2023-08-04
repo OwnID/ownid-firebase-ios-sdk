@@ -264,7 +264,7 @@ Where:
 
 ## Advanced Configuration
 
-### Logging
+### Logging Events
 
 OwnID SDK has a Logger that is used to log its events. You can enable Xcode console & Console.app logging by calling `OwnID.CoreSDK.logger.isEnabled = true`. To use a custom Logger, call `OwnID.CoreSDK.logger.setLogger(CustomLogger(), customTag: "CustomTag")`
 
